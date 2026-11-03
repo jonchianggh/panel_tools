@@ -9,8 +9,9 @@ services:
     volumes:
       - data:/data
     environment:
+      # Caddy listens here; keep it in step with the published port above.
+      - PORT=3000
       # Passed through from the host / platform env when set (see .env.example).
-      - PORT
       - PUBLIC_HOST
       - PANEL_PATH
       - SUB_PATH
