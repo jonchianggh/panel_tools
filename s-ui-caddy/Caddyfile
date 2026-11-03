@@ -14,6 +14,10 @@
 		defer
 	}
 
+	# Secret paths typed without the trailing slash.
+	redir {$PANEL_BASE} {$PANEL_PATH} 308
+	redir {$SUB_BASE} {$SUB_PATH} 308
+
 	# s-ui panel on its secret path.
 	@panel path {$PANEL_PATH}*
 	handle @panel {
