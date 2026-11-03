@@ -1,0 +1,51 @@
+{
+	admin off
+	auto_https off
+	persist_config off
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+:{$PORT} {
+	header {
+		-Server
+		-Via
+		defer
+	}
+
+	# s-ui panel on its secret path.
+	@panel path {$PANEL_PATH}*
+	handle @panel {
+		reverse_proxy 127.0.0.1:2095
+	}
+
+	# s-ui subscription server on its secret path.
+	@sub path {$SUB_PATH}*
+	handle @sub {
+		reverse_proxy 127.0.0.1:2096
+	}
+
+	# WebSocket / HTTPUpgrade inbounds: /<WS_SECRET>/<port>[/...] goes to the
+	# inbound listening on 127.0.0.1:<port>. Ports 10000-19999 only, so this
+	# route can never reach the panel or anything else in the container.
+	@ws {
+		path_regexp ws ^/{$WS_SECRET}/(1[0-9]{4})(/.*)?$
+		header_regexp conn Connection (?i)upgrade
+		header_regexp upg Upgrade (?i)websocket
+	}
+	handle @ws {
+		reverse_proxy 127.0.0.1:{re.ws.1}
+	}
+
+	# Everything else: the decoy site.
+	handle {
+		root * {$DECOY_DIR}
+		file_server
+	}
+
+	handle_errors {
+		header Content-Type "text/html; charset=utf-8"
+		respond "<!doctype html><title>{err.status_code} {err.status_text}</title><h1>{err.status_code} {err.status_text}</h1>" {err.status_code}
+	}
+}

@@ -1,0 +1,13 @@
+services:
+  sui:
+    build: .
+    ports:
+      - "3000:3000"
+      # Raw UDP/TCP inbounds (Hysteria2, TUIC, Reality...): publish the port
+      # here and bind the inbound to :: in s-ui.
+      # - "20000:20000/udp"
+    volumes:
+      - data:/data
+
+volumes:
+  data:
