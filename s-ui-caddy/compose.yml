@@ -8,6 +8,21 @@ services:
       # - "20000:20000/udp"
     volumes:
       - data:/data
+    environment:
+      # Passed through from the host / platform env when set (see .env.example).
+      - PORT
+      - PUBLIC_HOST
+      - PANEL_PATH
+      - SUB_PATH
+      - WS_SECRET
+      - ADMIN_USER
+      - ADMIN_PASSWORD
+      # Komari agent: starts only when both endpoint and token are set.
+      - AGENT_ENDPOINT
+      - AGENT_TOKEN
+      - AGENT_INTERVAL
+      - AGENT_DISABLE_WEB_SSH
+      - AGENT_IGNORE_UNSAFE_CERT
 
 volumes:
   data:
