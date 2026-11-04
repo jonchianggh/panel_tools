@@ -41,11 +41,11 @@ Add the port to `compose.yml`, e.g. `"20000:20000/udp"`, and bind the inbound to
 
 ## Komari agent
 
-The agent binary is built into the image (copied from `ghcr.io/komari-monitor/komari-agent`). Set `AGENT_ENDPOINT` and `AGENT_TOKEN` to run it; `AGENT_INTERVAL` and `AGENT_IGNORE_UNSAFE_CERT` pass through too. It only connects outbound, so it needs no port. Auto-update is always off. Web SSH stays off unless you set `AGENT_DISABLE_WEB_SSH=false`. Because it shares the container with sing-box, the network figures it reports are your proxy traffic.
+The agent binary is built into the image (copied from `ghcr.io/komari-monitor/komari-agent`). Set `AGENT_ENDPOINT` and `AGENT_TOKEN` to run it; `AGENT_INTERVAL` and `AGENT_IGNORE_UNSAFE_CERT` pass through too. It only connects outbound, so it needs no port. Auto-update is always off. Web SSH is on so you can open a shell from the Komari dashboard; set `AGENT_DISABLE_WEB_SSH=true` to turn it off. Because it shares the container with sing-box, the network figures it reports are your proxy traffic.
 
 ## Decoy
 
-The built-in decoy is in `decoy/`. To use your own without rebuilding, put a site in `/data/decoy` and restart.
+On first boot `decoy-gen.sh` writes a random site (name, colours and one of four layouts: status page, landing page, blog, maintenance notice) to `/data/decoy-gen`, so each deployment looks different and keeps its look across restarts. Delete that folder to roll a new one. To use your own site, put it in `/data/decoy` and restart. `DECOY_RANDOM=false` serves the bundled page in `decoy/` instead.
 
 ## Notes
 

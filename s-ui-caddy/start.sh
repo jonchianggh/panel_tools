@@ -28,8 +28,16 @@ chmod 600 "$SAVED"
 
 PUBLIC_HOST="${PUBLIC_HOST:-localhost}"
 PORT="${PORT:-3000}"
+# Decoy: your own site in /data/decoy wins; otherwise a random one generated on
+# first boot and kept on the volume (DECOY_RANDOM=false serves the bundled page).
 DECOY_DIR="$DATA/decoy"
-[ -d "$DECOY_DIR" ] || DECOY_DIR="${DEFAULT_DECOY:-/srv/decoy}"
+if [ ! -d "$DECOY_DIR" ]; then
+  case "${DECOY_RANDOM:-true}" in
+    false|0|no) DECOY_DIR="${DEFAULT_DECOY:-/srv/decoy}" ;;
+    *) DECOY_DIR="$DATA/decoy-gen"
+       [ -f "$DECOY_DIR/index.html" ] || "${DECOY_GEN:-decoy-gen}" "$DECOY_DIR" ;;
+  esac
+fi
 PANEL_BASE="${PANEL_PATH%/}"
 SUB_BASE="${SUB_PATH%/}"
 export PANEL_BASE SUB_BASE PORT PANEL_PATH SUB_PATH WS_SECRET DECOY_DIR
@@ -67,7 +75,7 @@ caddy run --config "${CADDYFILE:-/etc/caddy/Caddyfile}" --adapter caddyfile & pi
 
 if [ -n "${AGENT_ENDPOINT:-}" ] && [ -n "${AGENT_TOKEN:-}" ]; then
   export AGENT_DISABLE_AUTO_UPDATE=true
-  export AGENT_DISABLE_WEB_SSH="${AGENT_DISABLE_WEB_SSH:-true}"
+  export AGENT_DISABLE_WEB_SSH="${AGENT_DISABLE_WEB_SSH:-false}"
   komari-agent & pids+=($!)
   echo "start: komari agent reporting to $AGENT_ENDPOINT"
 fi

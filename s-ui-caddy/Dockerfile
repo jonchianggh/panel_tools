@@ -12,8 +12,9 @@ COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 COPY --from=komari /app/komari-agent /usr/local/bin/komari-agent
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY decoy/ /srv/decoy/
+COPY decoy-gen.sh /usr/local/bin/decoy-gen
 COPY start.sh /start.sh
-RUN chmod 755 /start.sh
+RUN chmod 755 /start.sh /usr/local/bin/decoy-gen
 
 ENV PORT=3000 \
     SUI_DB_FOLDER=/data/db \
