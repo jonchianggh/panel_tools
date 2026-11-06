@@ -24,7 +24,8 @@ sing-box or base64 profile.
 
 After that the config file is the source of truth: edit `/data/config.toml`
 (see the relay's `config.example.toml`) and restart. Env changes to the
-first-boot variables have no effect once the file exists.
+first-boot variables have no effect once the file exists, except `PUBLIC_HOST`
+and `PORT`, which are re-applied to `domain` and `listen` on every boot.
 
 ## Decoy
 

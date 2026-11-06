@@ -65,6 +65,12 @@ if [ ! -f "$CONFIG" ]; then
   echo "start: wrote $CONFIG (edit it and restart to change inbounds)"
 fi
 
+# Keep the public host and port in step with the env on every boot.
+if [ -n "${PUBLIC_HOST:-}" ] && [ "$PUBLIC_HOST" != localhost ]; then
+  sed -i "s|^domain = .*|domain = \"$PUBLIC_HOST\"|" "$CONFIG"
+fi
+sed -i "s|^listen = .*|listen = \"0.0.0.0:$PORT\"|" "$CONFIG"
+
 SUB=$(sed -n '/^\[subscription\]/,/^\[/{s/^path *= *"\(.*\)"/\1/p}' "$CONFIG" | head -1)
 [ -n "$SUB" ] && echo "start: subscription https://$PUBLIC_HOST$SUB"
 
