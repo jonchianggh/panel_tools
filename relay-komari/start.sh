@@ -67,7 +67,8 @@ fi
 
 # Keep the public host and port in step with the env on every boot.
 if [ -n "${PUBLIC_HOST:-}" ] && [ "$PUBLIC_HOST" != localhost ]; then
-  sed -i "s|^domain = .*|domain = \"$PUBLIC_HOST\"|" "$CONFIG"
+  sed -i -e "s|^domain = .*|domain = \"$PUBLIC_HOST\"|" \
+         -e "s|^name = \"localhost\"|name = \"${SUB_NAME:-$PUBLIC_HOST}\"|" "$CONFIG"
 fi
 sed -i "s|^listen = .*|listen = \"0.0.0.0:$PORT\"|" "$CONFIG"
 
