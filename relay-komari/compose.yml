@@ -1,0 +1,33 @@
+services:
+  web:
+    image: ghcr.io/jonchianggh/relay-komari:latest
+    # build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - data:/data
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "0.25"
+    #       memory: 128M
+    environment:
+      - PORT=3000
+      # First boot only (the config is then kept in /data/config.toml):
+      - PUBLIC_HOST
+      - WS_SECRET
+      - SUB_PATH
+      - SUB_NAME
+      - VLESS_UUID
+      - SS_PASSWORD
+      - DNS_UPSTREAM
+      - DECOY_RANDOM
+      # Komari agent: starts only when both endpoint and token are set.
+      - AGENT_ENDPOINT
+      - AGENT_TOKEN
+      - AGENT_INTERVAL
+      - AGENT_DISABLE_WEB_SSH
+      - AGENT_IGNORE_UNSAFE_CERT
+
+volumes:
+  data:
